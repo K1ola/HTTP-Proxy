@@ -2,13 +2,10 @@ package main
 
 import (
 	"database/sql"
-	//"crypto/tls"
-	//"database/sql"
-	"flag"
+
 	_ "github.com/mattn/go-sqlite3"
 	. "http-proxy/internal"
 	"log"
-
 )
 
 //func handleTunneling(w http.ResponseWriter, r *http.Request) {
@@ -45,20 +42,7 @@ func main() {
 	proxy.DB, _ = sql.Open("sqlite3", "./data/data.db")
 	defer proxy.DB.Close()
 
-	var pemPath string
-	flag.StringVar(&pemPath, "pem", "server.pem", "path to pem file")
-	var keyPath string
-	flag.StringVar(&keyPath, "key", "server.key", "path to key file")
-	var proto string
-	flag.StringVar(&proto, "proto", "http", "Proxy protocol (http or https)")
-	flag.Parse()
-	if proto != "http" && proto != "https" {
-		log.Fatal("Protocol must be either http or https")
-	}
+	log.Fatal(proxy.Server.ListenAndServe())
 
-	if proto == "http" {
-		log.Fatal(proxy.Server.ListenAndServe())
-	} else {
-		//log.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
-	}
+	//log.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
 }

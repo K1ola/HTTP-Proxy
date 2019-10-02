@@ -1,10 +1,12 @@
 package internal
 
 import (
+	"bytes"
 	"crypto/tls"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -40,6 +42,7 @@ func InitProxy() *Proxy {
 	_, err := proxy.DB.Exec("CREATE TABLE IF NOT EXISTS `requests` (	`id` INTEGER PRIMARY KEY AUTOINCREMENT,	`method` VARCHAR(64) NOT NULL," +
 		"`uri` VARCHAR(64) NOT NULL," +
 		"`proto` VARCHAR(64) NOT NULL," +
+		"`body` VARCHAR(64) NOT NULL," +
 		"`created` DATE NULL" +
 		");" +
 		"CREATE TABLE IF NOT EXISTS  `headers` (" +
@@ -60,14 +63,22 @@ func InitProxy() *Proxy {
 }
 
 func (p *Proxy) HandleHTTP(w http.ResponseWriter, req *http.Request) {
-	resp, err := http.DefaultTransport.RoundTrip(req)
+
+	body, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+
+	request, err := http.NewRequest(req.Method, req.RequestURI, bytes.NewReader(body))
+	if err != nil {}
+	request.Header = req.Header
+
+	resp, err := http.DefaultTransport.RoundTrip(request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		return
 	}
 	defer resp.Body.Close()
 	p.copyHeader(w.Header(), resp.Header)
-	p.insertRequestInDb(req)
+	p.insertRequestInDb(req, body)
 	w.WriteHeader(resp.StatusCode)
 	io.Copy(w, resp.Body)
 }
@@ -80,16 +91,17 @@ func (p *Proxy) copyHeader(dst, src http.Header) {
 	}
 }
 
-func (p *Proxy) insertRequestInDb(r *http.Request) {
-	//var id int
-	res, _ := p.DB.Exec(
-		"INSERT INTO requests(method, uri, proto, created) VALUES(?, ?, ?, ?) /*RETURNING id*/",
+func (p *Proxy) insertRequestInDb(r *http.Request, body []byte) {
+	res, err := p.DB.Exec(
+		"INSERT INTO requests(method, uri, proto, body, created) VALUES(?, ?, ?, ?, ?) /*RETURNING id*/",
 		r.Method,
 		r.RequestURI,
 		r.Proto,
+		body,
 		time.Now(),
 	)
 
+	if err != nil {}
 	id, _ := res.LastInsertId()
 
 	for k, v := range r.Header {

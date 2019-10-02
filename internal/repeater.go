@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type Repeater struct {
@@ -29,20 +30,27 @@ func InitRepeater() *Repeater {
 func (r *Repeater) RepeatRequest(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id := vars["id"]
-	var method, uri, proto string
+	var method, uri, proto, body string
 	var key, value string
 
-	rowsRequest, _ := r.DB.Query("select method, uri, proto from requests where id = ?", id)
+	rowsRequest, _ := r.DB.Query("select method, uri, proto, body from requests where id = ?", id)
 	//err := rowsRequest.Scan(&method, &uri, &proto)
 	for rowsRequest.Next() {
 		err := rowsRequest.Scan(
 			&method,
 			&uri,
 			&proto,
+			&body,
 		)
 		if err != nil {}
 	}
-	req, _ = http.NewRequest(method, uri, nil)
+	//if method == "GET" {
+	//	req, _ = http.NewRequest(method, uri, nil)
+	//}
+	//if method == "POST" {
+		req, _ = http.NewRequest(method, uri, strings.NewReader(body))
+	//}
+
 	rowsHeaders, err := r.DB.Query("select key, value from headers where request_id = ?", id)
 	if err != nil {}
 	for rowsHeaders.Next() {
