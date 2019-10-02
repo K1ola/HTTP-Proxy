@@ -10,17 +10,17 @@ import (
 	"time"
 )
 
-type request struct {
-	method string `json:"method"`
-	uri string `json:"uri"`
-	proto string `json:"proto"`
-	body string `json:"body"`
-	id int `json:"id"`
-	time time.Duration `json:"time"`
+type Request struct {
+	Method string        `json:"method"`
+	Uri    string        `json:"uri"`
+	Proto  string        `json:"proto"`
+	Body   string        `json:"body"`
+	Id     int           `json:"id"`
+	//Time   time.Duration `json:"time"`
 }
 
 type requestSlice struct {
-	res []request `json:"res"`
+	Res []Request `json:"res"`
 }
 
 type Repeater struct {
@@ -44,7 +44,7 @@ func InitRepeater() *Repeater {
 }
 
 func (r *Repeater) ShowRequests(w http.ResponseWriter, req *http.Request) {
-	result := make([]*request,0,1024)
+	result := make([]Request,0,1024)
 	var method string
 	var uri string
 	var proto string
@@ -53,7 +53,7 @@ func (r *Repeater) ShowRequests(w http.ResponseWriter, req *http.Request) {
 	var created time.Duration
 	rowsRequest, err := r.DB.Query("select id, method, uri, proto, body, created from requests")
 	if err != nil {}
-	data := &request{}
+	data := Request{}
 	//err := rowsRequest.Scan(&method, &uri, &proto)
 	for rowsRequest.Next() {
 		err := rowsRequest.Scan(
@@ -64,19 +64,18 @@ func (r *Repeater) ShowRequests(w http.ResponseWriter, req *http.Request) {
 			&body,
 			&created,
 		)
-		data.id = id
-		data.uri = uri
-		data.method = method
-		data.proto = proto
-		data.body = body
-		data.time = created
+		data.Id = id
+		data.Uri = uri
+		data.Method = method
+		data.Proto = proto
+		data.Body = body
+		//data.Time = created
 
 		if err != nil {}
 		result = append(result, data)
 	}
 
-	//rrr := &requestSlice{res:result}
-	bytes, err := json.Marshal(data)
+	bytes, err := json.Marshal(result)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
