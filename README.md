@@ -16,11 +16,11 @@ git clone https://github.com/K1ola/HTTP-Proxy.git
 cd HTTP-Proxy 
 ```
 
-Запустить прокси
+Запустить прокси (работает на порту 8888)
 ```
 ./bin/proxy
 ```
-Запустить репитер
+Запустить репитер (работает на порту 8887)
 ```
 ./bin/repeater 
 ```
