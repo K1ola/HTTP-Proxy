@@ -2,11 +2,26 @@ package internal
 
 import (
 	"database/sql"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
+
+type request struct {
+	method string `json:"method"`
+	uri string `json:"uri"`
+	proto string `json:"proto"`
+	body string `json:"body"`
+	id int `json:"id"`
+	time time.Duration `json:"time"`
+}
+
+type requestSlice struct {
+	res []request `json:"res"`
+}
 
 type Repeater struct {
 	DB *sql.DB
@@ -18,6 +33,7 @@ func InitRepeater() *Repeater {
 	repeater := Repeater{}
 	repeater.Router = mux.NewRouter()
 	repeater.Router.HandleFunc("/{id:[0-9]+}", repeater.RepeatRequest)
+	repeater.Router.HandleFunc("/showRequests", repeater.ShowRequests)
 
 	repeater.Server = &http.Server{
 		Addr:    ":8887",
@@ -25,6 +41,49 @@ func InitRepeater() *Repeater {
 	}
 
 	return &repeater
+}
+
+func (r *Repeater) ShowRequests(w http.ResponseWriter, req *http.Request) {
+	result := make([]*request,0,1024)
+	var method string
+	var uri string
+	var proto string
+	var body string
+	var id int
+	var created time.Duration
+	rowsRequest, err := r.DB.Query("select id, method, uri, proto, body, created from requests")
+	if err != nil {}
+	data := &request{}
+	//err := rowsRequest.Scan(&method, &uri, &proto)
+	for rowsRequest.Next() {
+		err := rowsRequest.Scan(
+			&id,
+			&method,
+			&uri,
+			&proto,
+			&body,
+			&created,
+		)
+		data.id = id
+		data.uri = uri
+		data.method = method
+		data.proto = proto
+		data.body = body
+		data.time = created
+
+		if err != nil {}
+		result = append(result, data)
+	}
+
+	//rrr := &requestSlice{res:result}
+	bytes, err := json.Marshal(data)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(bytes)
 }
 
 func (r *Repeater) RepeatRequest(w http.ResponseWriter, req *http.Request) {
@@ -44,12 +103,7 @@ func (r *Repeater) RepeatRequest(w http.ResponseWriter, req *http.Request) {
 		)
 		if err != nil {}
 	}
-	//if method == "GET" {
-	//	req, _ = http.NewRequest(method, uri, nil)
-	//}
-	//if method == "POST" {
-		req, _ = http.NewRequest(method, uri, strings.NewReader(body))
-	//}
+	req, _ = http.NewRequest(method, uri, strings.NewReader(body))
 
 	rowsHeaders, err := r.DB.Query("select key, value from headers where request_id = ?", id)
 	if err != nil {}

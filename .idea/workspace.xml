@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c9c3176-0c98-4573-95a4-0447373d3b58" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/cmd/proxy/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/proxy/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/data.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/data.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/proxy.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/proxy.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/repeater.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repeater.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,6 +39,13 @@
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="main: schema" type="981a47c2:SqliteImplModel$Schema" />
       </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="SQLite" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="main: schema" type="981a47c2:SqliteImplModel$Schema" />
+        <item name="requests: table" type="3d80ac25:SqliteImplModel$Table" />
+      </path>
     </expand>
     <select />
   </component>
@@ -51,6 +57,9 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1ReWUHcq66vWDqFyTfYiRjndJyN" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="sqlite" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -71,10 +80,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build http-proxy/cmd/proxy">
+  <component name="RunManager" selected="Go Build.go build http-proxy/cmd/repeater">
     <configuration name="go build http-proxy/cmd/proxy" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="HTTP-Proxy" />
       <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-o ../../bin/proxy" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/cmd/proxy/main.go" />
       <package value="http-proxy/cmd/proxy" />
@@ -84,16 +94,31 @@
     <configuration name="go build http-proxy/cmd/repeater" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="HTTP-Proxy" />
       <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-o ../../bin/repeater" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/cmd/repeater/main.go" />
       <package value="http-proxy/cmd/repeater" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build http-proxy/cmd/proxy" />
+      <item itemvalue="Go Build.go build http-proxy/cmd/repeater" />
+      <item itemvalue="Docker.Dockerfile" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build http-proxy/cmd/proxy" />
         <item itemvalue="Go Build.go build http-proxy/cmd/repeater" />
+        <item itemvalue="Go Build.go build http-proxy/cmd/proxy" />
+        <item itemvalue="Docker.Dockerfile" />
       </list>
     </recent_temporary>
   </component>
@@ -110,11 +135,6 @@
               <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
               <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@7bde40aa" type="7427dc5b:ServiceModel$ServiceGroupNode" />
               <item name="com.intellij.execution.services.ServiceModel$ServiceNode@6d988a78" type="9fbbdea:ServiceModel$ServiceNode" />
-            </path>
-            <path>
-              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@7bde40aa" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@1f45d2f1" type="9fbbdea:ServiceModel$ServiceNode" />
             </path>
             <path>
               <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
@@ -148,11 +168,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/repeater.go</url>
-          <line>46</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/proxy.go</url>
           <line>66</line>
